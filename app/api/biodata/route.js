@@ -35,9 +35,9 @@ export async function GET(req) {
 // Simpan / update biodata
 export async function POST(req) {
   try {
-    const { user_id, alamat, tanggal_lahir, jenis_kelamin } = await req.json();
+    const { user_id, nama, alamat, tanggal_lahir, jenis_kelamin } = await req.json();
 
-    if (!user_id || !alamat || !tanggal_lahir || !jenis_kelamin) {
+    if (!user_id || !nama || !alamat || !tanggal_lahir || !jenis_kelamin) {
       return NextResponse.json(
         { message: "Semua field wajib diisi" },
         { status: 400 }
@@ -45,19 +45,19 @@ export async function POST(req) {
     }
 
     const [existing] = await pool.query(
-      "SELECT id FROM biodata WHERE user_id = ?",
+      "SELECT user_id FROM biodata WHERE user_id = ?",
       [user_id]
     );
 
     if (existing.length > 0) {
       await pool.query(
-        "UPDATE biodata SET alamat = ?, tanggal_lahir = ?, jenis_kelamin = ? WHERE user_id = ?",
-        [alamat, tanggal_lahir, jenis_kelamin, user_id]
+        "UPDATE biodata SET nama = ?, alamat = ?, tanggal_lahir = ?, jenis_kelamin = ? WHERE user_id = ?",
+        [nama, alamat, tanggal_lahir, jenis_kelamin, user_id]
       );
     } else {
       await pool.query(
-        "INSERT INTO biodata (user_id, alamat, tanggal_lahir, jenis_kelamin) VALUES (?, ?, ?, ?)",
-        [user_id, alamat, tanggal_lahir, jenis_kelamin]
+        "INSERT INTO biodata (user_id, nama, alamat, tanggal_lahir, jenis_kelamin) VALUES (?, ?, ?, ?, ?)",
+        [user_id, nama, alamat, tanggal_lahir, jenis_kelamin]
       );
     }
 
